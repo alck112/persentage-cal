@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>體重減少百分比計算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #actualLoss, #result, #percentages {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #percentages {
+            font-weight: normal;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>體重減少百分比計算器</h2>
+        <input type="number" id="initialWeight" placeholder="初始重量 (kg)" step="0.01">
+        <input type="number" id="finalWeight" placeholder="最終重量 (kg)" step="0.01">
+        <button onclick="calculatePercentage()">計算</button>
+        <div id="actualLoss"></div>
+        <div id="result"></div>
+        <div id="percentages"></div>
+    </div>
+
+    <script>
+        function calculatePercentage() {
+            const initialWeight = parseFloat(document.getElementById('initialWeight').value);
+            const finalWeight = parseFloat(document.getElementById('finalWeight').value);
+            
+            if (isNaN(initialWeight) || isNaN(finalWeight)) {
+                document.getElementById('actualLoss').innerText = '';
+                document.getElementById('result').innerText = '請輸入有效的重量';
+                document.getElementById('percentages').innerText = '';
+                return;
+            }
+            
+            if (finalWeight > initialWeight) {
+                document.getElementById('actualLoss').innerText = '';
+                document.getElementById('result').innerText = '最終重量不能大於初始重量';
+                document.getElementById('percentages').innerText = '';
+                return;
+            }
+            
+            const weightLoss = initialWeight - finalWeight;
+            const percentageLoss = (weightLoss / initialWeight) * 100;
+            
+            document.getElementById('actualLoss').innerText = `實際減少: ${weightLoss.toFixed(2)} kg`;
+            document.getElementById('result').innerText = `減少了 ${percentageLoss.toFixed(2)}%`;
+
+            // 計算並顯示最終重量的0.5%-1%範圍
+            const halfPercent = finalWeight * 0.005;
+            const onePercent = finalWeight * 0.01;
+            document.getElementById('percentages').innerHTML = `
+                最終重量的 0.5%-1%: ${halfPercent.toFixed(2)}kg - ${onePercent.toFixed(2)}kg
+            `;
+        }
+
+        // 當最終重量輸入變化時，更新百分比顯示
+        document.getElementById('finalWeight').addEventListener('input', function() {
+            const finalWeight = parseFloat(this.value);
+            if (!isNaN(finalWeight)) {
+                const halfPercent = finalWeight * 0.005;
+                const onePercent = finalWeight * 0.01;
+                document.getElementById('percentages').innerHTML = `
+                    最終重量的 0.5%-1%: ${halfPercent.toFixed(2)}kg - ${onePercent.toFixed(2)}kg
+                `;
+            } else {
+                document.getElementById('percentages').innerText = '';
+            }
+        });
+    </script>
+</body>
+</html>
